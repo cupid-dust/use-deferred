@@ -1,24 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useMemo, useDeferredValue } from 'react';
 
 function App() {
+  const [name, setName] = useState<string>('');
+  const deferredName = useDeferredValue(name);
+
+  const LIST_SIZE: number = 10000;
+
+  const list = useMemo(() => {
+    const dataList: string[] = [];
+    for (let i: number = 0; i < LIST_SIZE; i++) {
+      dataList.push(deferredName);
+    }
+    return dataList;
+  }, [deferredName]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setName(value);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <input type='text' value={name} onChange={handleChange} />
+      <p>
+        {list.map((item) => {
+          return <p>{item}</p>;
+        })}
+      </p>
     </div>
   );
 }
